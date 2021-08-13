@@ -1,0 +1,27 @@
+<!-- {% if todolists %}
+    <ul>
+        {% for todolist in todolists %}
+        {{todolist.list_name}}
+        <ul>
+        {% for item in todoitems %}
+        {% if item.todo_list.id == todolist.id %}
+        <li><a href="/todo/{{ todolist.id}}">{{item.title}}</a></li>
+        {% endif %}
+        {% endfor %}
+        </ul>
+        {% endfor %}
+    </ul>
+{% endif %} -->
+
+{% if todolists %}
+
+    <ul>
+        {% for todolist in todolists %}
+        <li><a href="/todo/{{todolist.id}}">{{todolist.list_name}}</a></li>
+        {% endfor %}
+    </ul>
+
+    <a href='/todo/create'><button>CREATE</button></a><br>
+    <a href='/todo/delete'><button>DELETE</button></a>
+
+{% endif %}

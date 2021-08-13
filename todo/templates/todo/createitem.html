@@ -1,0 +1,10 @@
+<form action="{% url 'todo:item_create' todolist.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <h1>create new item</h1>
+        <label for="title">Title : </label><input type="text" name="title" id="title">
+        <label for="duedate">Due Date : </label><input type="datetime-local" name="duedate" id="duedate">
+        <input type="submit">
+    </fieldset>
+</form>
+<a href='/todo'><button>BACK</button></a><br>

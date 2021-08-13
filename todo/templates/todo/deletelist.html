@@ -1,0 +1,13 @@
+<form action="{% url 'todo:list_delete' %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <h1>Enter the list to be deleted</h1>
+        <input type="text" name="name" id="name">
+        <input type="submit">
+    </fieldset>
+</form>
+{% for message in messages %}
+    <p style="color:red;">{{ message }}</p>
+{% endfor %}
+
+<a href='/todo'><button>BACK</button></a><br>
