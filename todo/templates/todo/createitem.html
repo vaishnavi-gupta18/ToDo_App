@@ -7,4 +7,7 @@
         <input type="submit">
     </fieldset>
 </form>
+{% for message in messages %}
+    <p style="color:red;">{{ message }}</p>
+{% endfor %}
 <a href='/todo'><button>BACK</button></a><br>

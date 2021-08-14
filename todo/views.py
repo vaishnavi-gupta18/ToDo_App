@@ -104,12 +104,20 @@ def create_item(request, list_id):
     todolist = Todolist.objects.get(id=list_id)
     title1 = request.POST["title"]
     date = request.POST["duedate"]
-    Todoitem.objects.create(title=title1,checked=False,due_date=date,todo_list=todolist)
-    lists = Todolist.objects.all()
-    context = {
-        'todolists' : lists
-    }
-    return render(request, 'todo/index.html', context )
+    res = Todoitem.objects.filter(title=title1,todo_list=todolist)
+    if len(res)>0:
+        messages.error(request,'Item already present')
+        context = {
+        'todolist' : todolist
+        }
+        return render(request, 'todo/createitem.html',context)
+    else: 
+        Todoitem.objects.create(title=title1,checked=False,due_date=date,todo_list=todolist)
+        lists = Todolist.objects.all()
+        context = {
+            'todolists' : lists
+        }
+        return render(request, 'todo/index.html', context )
 
 def update_item(request,list_id):
     todolist = Todolist.objects.get(id=list_id)
