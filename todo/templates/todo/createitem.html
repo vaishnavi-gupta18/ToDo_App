@@ -2,8 +2,8 @@
     {% csrf_token %}
     <fieldset>
         <h1>create new item</h1>
-        <label for="title">Title : </label><input type="text" name="title" id="title">
-        <label for="duedate">Due Date : </label><input type="datetime-local" name="duedate" id="duedate">
+        <label for="title">Title : </label><input type="text" name="title" id="title" required>
+        <label for="duedate">Due Date : </label><input type="datetime-local" name="duedate" id="duedate" required>
         <input type="submit">
     </fieldset>
 </form>

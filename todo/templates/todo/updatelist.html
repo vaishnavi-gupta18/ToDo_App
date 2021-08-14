@@ -1,0 +1,15 @@
+<form action="{% url 'todo:list_update' %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <h1>Enter the list name to be updated</h1>
+        <input type="text" name="name" id="name">
+        <h1>Enter new name for the list</h1>
+        <input type="text" name="uname" id="uname" required>
+        <input type="submit">
+    </fieldset>
+</form>
+{% for message in messages %}
+    <p style="color:red;">{{ message }}</p>
+{% endfor %}
+
+<a href='/todo'><button>BACK</button></a><br>
