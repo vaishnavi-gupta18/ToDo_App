@@ -1,18 +1,4 @@
-<!-- {% if todolists %}
-    <ul>
-        {% for todolist in todolists %}
-        {{todolist.list_name}}
-        <ul>
-        {% for item in todoitems %}
-        {% if item.todo_list.id == todolist.id %}
-        <li><a href="/todo/{{ todolist.id}}">{{item.title}}</a></li>
-        {% endif %}
-        {% endfor %}
-        </ul>
-        {% endfor %}
-    </ul>
-{% endif %} -->
-
+<h1>ToDo APP</h1>
 {% if todolists %}
 
     <ul>
