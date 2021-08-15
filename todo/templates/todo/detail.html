@@ -1,11 +1,16 @@
-<h1>{{ todolist.list_name}}</h1>
+<h1>{{ todolist.list_name}}</h1><br>
+<a href='/todo/{{todolist.id}}/updatelist'><button>CHANGE NAME</button></a><br><br>
+<form action="{% url 'todo:list_delete' todolist.id %}" method="GET">
+    {% csrf_token %}
+        <input type="submit" value="DELETE">
+</form>
 <form action="{% url 'todo:update' todolist.id %}" method="post">
     {% csrf_token %}
     <fieldset>
 <ul>
     {% for item in items_list %}
     <li>
-        <p style="size: 21px; color: blue;">{{item.title}}
+        <p style="size: 21px; color: blue;"><a href="/todo/{{todolist.id}}/{{item.id}}">{{item.title}}</a>
         {% if item.checked == True %}
         <input type="checkbox" name={{item.title}} value={{item.title}} checked="checked" />
         {% else %}
@@ -21,5 +26,4 @@
 </fieldset>
 </form>
 <a href='/todo/{{todolist.id}}/createitem'><button>ADD ITEM</button></a>
-<a href='/todo/{{todolist.id}}/deleteitem'><button>DELETE ITEM</button></a>
-<a href='/todo/{{todolist.id}}/updateitem'><button>UPDATE ITEM</button></a>
+

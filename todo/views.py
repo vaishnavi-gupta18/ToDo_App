@@ -6,15 +6,7 @@ from django.template import loader
 from django.template.context import Context
 from django.views import generic
 from .models import Todolist, Todoitem
-# Create your views here.
-# def index(request):
-#     list_todo = Todolist.objects.all()
-#     template = loader.get_template('todo/index.html')
-#     context = {
-#         'todolists' : list_todo,
-#     }
-#     # output = ', '.join(item.title for item in list_items)
-#     return HttpResponse(template.render(context,request))
+
 class IndexView(generic.ListView):
     template_name = 'todo/index.html'
     context_object_name = 'todolists'
@@ -22,13 +14,10 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return Todolist.objects.all()
 
-# class detail(generic.DetailView):
-#     model=Todolist
-#     template_name='todo/' 
 def detail(request, list_id):
     try:
         todolist = Todolist.objects.get(id=list_id)
-    except Todolist.Doesnotexist:
+    except Todolist.DoesNotExist:
         raise Http404("this list does not exist")
     items_list = Todoitem.objects.filter(todo_list = todolist)
     context = {
@@ -54,17 +43,12 @@ def create(request):
         }
         return render(request, 'todo/index.html', context )
 
-def delete(request):
-    if request.method == 'GET':
-        return render(request, 'todo/deletelist.html')
-    
-    name = request.POST["name"]
+def delete(request,list_id):
     try:
-        todolist = Todolist.objects.get(list_name=name)
+        todolist = Todolist.objects.get(id=list_id)
+        res = Todolist.objects.filter(id=list_id)
     except Todolist.DoesNotExist:
-        messages.error(request,'List not present')
-        return render(request, 'todo/deletelist.html')
-    res = Todolist.objects.filter(list_name=name)
+        raise Http404("this list does not exist")
     res.delete()
     lists = Todolist.objects.all()
     context = {
@@ -72,24 +56,34 @@ def delete(request):
     }
     return render(request, 'todo/index.html', context )
 
-def update(request):
+def update(request,list_id):
+    try:
+        todolist = Todolist.objects.get(id=list_id)
+        res = Todolist.objects.filter(id=list_id)
+    except Todolist.DoesNotExist:
+        raise Http404("this list does not exist")
+        
     if request.method == 'GET':
-        return render(request, 'todo/updatelist.html')
+        context = {
+        'todolist' : todolist,
+    }
+        return render(request, 'todo/updatelist.html',context)
     
     name = request.POST["name"]
-    updated_name=request.POST["uname"]
     try:
-        todolist = Todolist.objects.get(list_name=name)
-    except Todolist.DoesNotExist:
-        messages.error(request,'List not present')
-        return render(request, 'todo/updatelist.html')
-    res = Todolist.objects.filter(list_name=name)
-    res.update(list_name=updated_name)
-    lists = Todolist.objects.all()
-    context = {
-        'todolists' : lists
-    }
-    return render(request, 'todo/index.html', context )
+        check = Todolist.objects.get(list_name=name)
+        messages.error(request,'List already present')
+        context = {
+            'todolist' : todolist,
+        }
+        return render(request, 'todo/updatelist.html',context)
+    except:
+        res.update(list_name=name)
+        lists = Todolist.objects.all()
+        context = {
+            'todolists' : lists
+        }
+        return render(request, 'todo/index.html', context )
 
 
 def create_item(request, list_id):
@@ -118,30 +112,29 @@ def create_item(request, list_id):
         }
         return render(request, 'todo/index.html', context )
 
-def update_item(request,list_id):
-    todolist = Todolist.objects.get(id=list_id)
+def update_item(request,list_id,item_id):
+    try:
+        todolist = Todolist.objects.get(id=list_id)
+        todoitem = Todoitem.objects.get(id=item_id,todo_list=todolist)
+        item = Todoitem.objects.filter(id=item_id,todo_list=todolist)
+    except Todolist.DoesNotExist:
+        raise Http404("this list does not exist")
+    except Todoitem.DoesNotExist:
+        raise Http404("this item does not exist")
     if request.method == 'GET':
         context = {
-        'todolist' : todolist
+        'todolist' : todolist,
+        'todoitem' : todoitem
         }
         return render(request, 'todo/updateitem.html',context)
-    name = request.POST["name"]
     title1 = request.POST["title"]
     date = request.POST["duedate"]
     if request.POST["status"] == 'on':
         status=True
     else:
         status=False
-    try:
-        todoitem = Todoitem.objects.get(title=name,todo_list=todolist)
-    except Todoitem.DoesNotExist:
-        messages.error(request,'Item not present')
-        context = {
-        'todolist' : todolist
-        }
-        return render(request, 'todo/updateitem.html',context)
-    res = Todoitem.objects.filter(title=name,todo_list=todolist)
-    res.update(title=title1,checked=status,due_date=date,todo_list=todolist)
+
+    item.update(title=title1,checked=status,due_date=date,todo_list=todolist)
     lists = Todolist.objects.all()
     context = {
         'todolists' : lists
@@ -149,29 +142,24 @@ def update_item(request,list_id):
     return render(request, 'todo/index.html', context )
 
 
-def delete_item(request,list_id):
-    todolist = Todolist.objects.get(id=list_id)
-    if request.method == 'GET':
-        context = {
-        'todolist' : todolist
-        }
-        return render(request, 'todo/deleteitem.html',context)
-    name=request.POST["name"]
+def delete_item(request,list_id,item_id):
     try:
-        todoitem = Todoitem.objects.get(title=name,todo_list=todolist)
+        todolist = Todolist.objects.get(id=list_id)
+    except Todolist.DoesNotExist:
+        raise Http404("this list does not exist")
+    try:
+        todoitem = Todoitem.objects.get(id=item_id,todo_list=todolist)
+        res = Todoitem.objects.filter(id=item_id,todo_list=todolist)
     except Todoitem.DoesNotExist:
-        messages.error(request,'Item not present')
-        context = {
-        'todolist' : todolist
-        }
-        return render(request, 'todo/deleteitem.html',context)
-    res = Todoitem.objects.filter(title=name,todo_list=todolist)
+        raise Http404("this item does not exist")
+
     res.delete()
-    lists = Todolist.objects.all()
+    items_list = Todoitem.objects.filter(todo_list = todolist)
     context = {
-        'todolists' : lists
+        'todolist' : todolist,
+        'items_list' : items_list
     }
-    return render(request, 'todo/index.html', context )
+    return render(request, 'todo/detail.html', context )
 
 def todo_update(request,list_id):
     todolist = Todolist.objects.get(id=list_id)

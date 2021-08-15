@@ -1,16 +1,22 @@
-<form action="{% url 'todo:item_update' todolist.id %}" method="post">
+<form action="{% url 'todo:item_update' todolist.id todoitem.id%}" method="post">
     {% csrf_token %}
     <fieldset>
-        <h1>Enter title of item to be updated</h1>
-        <input type="text" name="name" id="name">
-        <h1>Update</h1>
-        <label for="title">Title : </label><input type="text" name="title" id="title">
-        <label for="duedate">Due Date : </label><input type="datetime-local" name="duedate" id="duedate">
-        <label for="status">Status : </label><input type="radio" name="status" id="status">
-        <input type="submit">
+        <h1>{{todoitem.title}}</h1>
+        <label for="title">Title : </label><input type="text" name="title" id="title" placeholder={{todoitem.title}} value={{todoitem.title}} required><br><br>
+        <label for="duedate">Due Date : </label><input type="datetime-local" name="duedate" id="duedate" value={{todoitem.due_date}} required><br><br>
+        {% if todoitem.checked == True %}
+        <label for="status">Checked</label><input type="radio" name="status" id="status" checked required><br><br>
+        {% else %}
+        <label for="status">Checked </label><input type="radio" name="status" id="status" required><br><br>
+        {% endif %}
+        <input type="submit" value="Update">
+
     </fieldset>
+</form>
+<form action="{% url 'todo:item_delete' todolist.id todoitem.id %}" method="GET">
+    {% csrf_token %}
+        <input type="submit" value="Delete">
 </form>
 {% for message in messages %}
     <p style="color:red;">{{ message }}</p>
 {% endfor %}
-<a href='/todo'><button>BACK</button></a><br>
